@@ -6,7 +6,6 @@ import requests
 import time
 import yaml
 
-
 def check_ip(record):
     """ Check whether current IP matches IP in DNS
     Arguments:
@@ -36,25 +35,23 @@ def log_print(log_string):
 
 
 def main():
-    if os.path.isfile('/config.yml') is not True:
-        print('/config.yml does not exist or is not a file, exiting.')
+    if not os.environ['DOMAINS']:
+        print('DOMAINS environment variable is empty, exiting.')
         exit(1)
 
-    config_file = yaml.load(open('/config.yml', 'r'))
-
-    for domain in config_file:
+    for domain_bundle in os.environ['DOMAINS'].split(';'):
+        domain = domain_bundle.split('=')[0]
         nsone_config = Config()
-        nsone_config.createFromAPIKey(config_file[domain]['api-key'])
+        nsone_config.createFromAPIKey(os.environ['NS1_API_KEY'])
         nsone_config["transport"] = "requests"
         client = NS1(config=nsone_config)
         zone = client.loadZone(domain)
 
-        for record in config_file[domain]['records-to-update']:
+        for record in domain_bundle.split('=')[1].split(','):
             record = zone.loadRecord(record, 'A')
             result = check_ip(record)
             if result['matches'] is False:
                 set_ip(record, result['my_ip'])
-
 
 if __name__ == "__main__":
     main()

@@ -7,9 +7,9 @@ This updates DNS records in NS1 with the current IP (from [ipify.org](https://ww
 ### docker run
 ```
 docker run -d \
-    -v /your/config.yml:/config.yml:ro \
-    --env FREQUENCY=5 \
-    microbug/ns1-dynamic-dns:latest
+    -e DOMAINS=example.com=www.example.com,blog.example.com;example.org=www.example.org,anotherblog.example.org \
+    -e FREQUENCY=5 \
+    rzen/ns1-dynamic-dns:latest
 ```
 
 ### docker-compose
@@ -17,11 +17,11 @@ docker run -d \
 services:
   dynamic-dns:
     environment:
+      - NS1_API_KEY=${NS1_API_KEY}  # defined in .env file
+      - DOMAINS=example.com=www.example.com,blog.example.com;example.org=www.example.org,anotherblog.example.org
       - FREQUENCY=5
-    image: microbug/ns1-dynamic-dns:latest
-    volumes:
-      - /your/config.yml:/config.yml:ro
-    restart: unless-stopped
+    image: rzen/ns1-dynamic-dns:latest
+    restart: always
 ```
 
 ### custom frequency
@@ -31,8 +31,13 @@ You can change the value of the `FREQUENCY` environment variable to make the scr
 To test the script, run it through `docker run` and append `/dynamic-dns.py`. This will run the script once, then kill the container. Example:
 
 ```
-docker run --rm -v /your/config.yml:/config.yml:ro microbug/dynamic-dns:latest /dynamic-dns.py
+docker run --rm rzen/dynamic-dns:latest /dynamic-dns.py
 ```
 
-## Config file
-A `config.yml` file **must** be passed or the container won't be able to do anything. The format for the config file can be seen in `example-config.yml`.
+## Configuration
+
+Config file is not required in this fork.
+
+API key is provided in the `NS1_API_KEY` environment variable.
+
+Domains and hosts are provided in the `DOMAINS` environment variable.
