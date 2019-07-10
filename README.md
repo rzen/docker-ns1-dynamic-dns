@@ -31,7 +31,7 @@ You can change the value of the `FREQUENCY` environment variable to make the scr
 To test the script, run it through `docker run` and append `/dynamic-dns.py`. This will run the script once, then kill the container. Example:
 
 ```
-docker run --rm rzen/dynamic-dns:latest /dynamic-dns.py
+docker run --rm rzen/ns1-dynamic-dns:latest /dynamic-dns.py
 ```
 
 ## Configuration
