@@ -16,11 +16,11 @@ docker run -d \
 ```yaml
 services:
   dynamic-dns:
+    image: rzen/ns1-dynamic-dns:latest
     environment:
       - NS1_API_KEY=${NS1_API_KEY}  # defined in .env file
       - DOMAINS=example.com=www.example.com,blog.example.com;example.org=www.example.org,anotherblog.example.org
       - FREQUENCY=5
-    image: rzen/ns1-dynamic-dns:latest
     restart: always
 ```
 
